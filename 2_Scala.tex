@@ -1,0 +1,96 @@
+
+\section{Scala}
+
+\begin{breakbox}
+\textbf{Expression Problem:}\\
+Wie kann man zu einem Programm \\
+a) neue Datentypen \\
+b) neue Operationen \\
+hinzufuegen, ohne\\
+1) bestehenden Code anzupassen\\
+2) keine Typensicherheit zu verlieren \\\\
+\emph{Loesung OO}
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemindent}{-0.15in}
+	\pro neue Datentypen mit Vererbung
+	\con neue Operationen, schwer da Hierarchie anzupassen. Loesung: Visitor
+\end{itemize}
+\emph{Loesung FP}
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemindent}{-0.15in}
+	\con neue Datentypen, schwer alle Pattern-Matches in Fkt anpassen. Loesung Haskell: Type Classes
+	\pro neue Operationen, einfach da getrennt von Daten
+\end{itemize}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Types:}\\
+\emph{Typisierung:} statisch mit type-inference\\
+\emph{scala.Any:} \mintinline[fontsize=\scriptsize]{scala}{AnyVal, Anyref}\\
+\emph{scala.AnyVal:} \mintinline[fontsize=\scriptsize]{scala}{Int, Float, Boolean, Nothing}\\
+\emph{scala.AnyRef:} \mintinline[fontsize=\scriptsize]{scala}{String, List, Null, Nothing}\\
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{List and Tupel:}\\
+\emph{List:} Kein Interface, konkrete Klasse, immutable, var. Anz. desselben Typs\\
+\begin{scalacode}
+val aList = List(2,3,4) // aList: List[Int]
+val list = 1 :: 2 :: 3 :: Nil
+list.head //1
+list.tail //List(2,3)
+list(0) //1
+\end{scalacode}
+
+\emph{Tupel:} Fixe Anz. Elemente unterschiedlichen Typs\\
+\begin{scalacode}
+val tupel2 = Tuple2(1, "String") //tupel2: (Int, String)
+val theInt = tupel2._1
+val triple = (1,2,"3") //triple: (Int, Int, String)
+\end{scalacode}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Variablen und Kontrollstrukturen:}\\
+\begin{scalacode}
+val i = 42 //konstante
+var j = 43 //variable
+lazy val k = 44 //init bei erstem Zugriff
+val max = if(a>b) a else b //ifelse als expression
+\end{scalacode}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Pattern Matching:}\\
+\begin{scalacode}
+//example with Int
+def patternMatching(i:Int) = {
+  i match {
+    case 0 => "Null"
+    case 1 => "Eins"
+    case _ => "?"
+  }
+}
+
+//example with case class
+case class Person(name:String, alter:Int)
+def matchAPerson(person: Person) = {
+  person match {
+    case Person("Peter", 42)           => "Found Peter!"
+    case Person(name, age) if age < 18 => s"minor \$name"
+    case p if p.alter == 42   => "Person with a magical age!"
+    case Person(name, _)               => s"adult \$name"
+    //case _                             => "unknown person"
+  }
+}
+
+val ruedi = Person("Ruedi", 42)
+matchAPerson(ruedi) //person with magical age!
+\end{scalacode}
+\end{breakbox}
