@@ -153,6 +153,22 @@ val isAdult2 = new Function[Person, Boolean] {
 \end{breakbox}
 
 \begin{breakbox}
+\textbf{Traits:}\\
+\begin{scalacode}
+trait Equal[T] {
+  def isEqual(t:T):Boolean
+  def isNotEqual(t:T) = !isEqual(t)
+}
+trait Named { def named:String }
+
+//this mixin with uap is really smooth shit!
+case class User(named:String) extends Equal[User] with Named {
+  def isEqual(t:User):Boolean = this.named == t.named
+}
+\end{scalacode}
+\end{breakbox}
+
+\begin{breakbox}
 \textbf{Klassen:}
 \begin{itemize}
 	\item abstrakte und finale Klassen
@@ -239,18 +255,52 @@ Lst.length(list)
 \end{breakbox}
 
 \begin{breakbox}
-\textbf{Traits:}\\
+\textbf{Generics with type-bounds:}
+\begin{itemize}
+	\item \mintinline[fontsize=\scriptsize]{scala}{<:} extends  
+	\item \mintinline[fontsize=\scriptsize]{scala}{>:} super 
+\end{itemize}
 \begin{scalacode}
-trait Equal[T] {
-  def isEqual(t:T):Boolean
-  def isNotEqual(t:T) = !isEqual(t)
-}
-trait Named { def named:String }
+case class Node[T <: Comparable[T] ](value:T, 
+	left:Option[Node[T]], right:Option[Node[T]])
 
-//this mixin with uap is really smooth shit!
-case class User(named:String) extends Equal[User] with Named {
-  def isEqual(t:User):Boolean = this.named == t.named
+// selfmade using
+def using[T <: Closeable](resource : => T)(fun: => Unit) = {
+	try{fun(resource)} finally {resource.close()}
 }
 \end{scalacode}
 \end{breakbox}
+
+\begin{breakbox}
+\textbf{Varianz:}\\
+\begin{scalacode}
+// Covariant: auch Subtypen erlaubt 
+// (Return values are in a covariant position)
+anAnimal = getGiraffe() -- covariante Umwandlung
+// Contravariant: auch Supertypen erlaubt 
+// (Parameter are in contravariant position)
+passAnimal(aGiraffe) -- contravariante Umwandlung
+
+--Baskets
+class CoVariantBasket[+T](init:T) {
+  private val current : T = init
+  def get : T = current
+  //def set(t:T) = current = t
+}
+class ContraVariantBasket[-T](var init:T) {
+  //private var current : T = init //now allowed
+  //def get : T = current //now allowed
+  def set(t:T) = init = t
+}
+
+val bananaBasket : CoVariantBasket[Banana] = 
+	new CoVariantBasket[Banana](new Banana)
+val fruitBasket : CoVariantBasket[Fruit] = bananaBasket
+
+val fruitBasket2 : ContraVariantBasket[Fruit] = 
+	new ContraVariantBasket[Fruit](new Apple)
+val bananaBasket2 : ContraVariantBasket[Banana] = fruitBasket2
+\end{scalacode}
+\end{breakbox}
+
 
