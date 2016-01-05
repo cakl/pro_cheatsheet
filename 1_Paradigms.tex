@@ -1,0 +1,315 @@
+
+\section{Paradigms}
+
+\begin{breakbox}
+\textbf{Imperative:}
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemindent}{-0.15in}
+	\item How program operates
+	\item Statements, change a programs state
+	\item Program = Seq. of statements
+	\item Computation = Change of state
+\end{itemize}
+\textbf{Declarative:}
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemindent}{-0.15in}
+	\item Logic of computation without describing its control flow
+	\item No side effects
+	\item Program = theories of formal logic
+	\item Computation = deductions
+\end{itemize}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Logic Programming:}
+\begin{center} Computation: Proof of Predicate \end{center}
+$mensch(sokrates)$ \\
+$\forall mensch(x) \implies sterblich(x)$ \\
+$sterblich(sokrates)$\\
+
+\textbf{Prolog:}
+\vspace{-5mm}
+\begin{minted}[mathescape, numbersep=5pt, frame=lines,framesep=2mm]{prolog}
+mensch(sokrates).
+sterblich(X):-mensch(X).
+?-sterblich(X) % X = sokrates
+\end{minted}
+\textbf{Prolog Syntax:}\\
+\emph{Fakten:} \mintinline{prolog}{bhf(bern)}\\
+\emph{Variable (X)}: \mintinline{prolog}{verb(X,Y)}\\
+\emph{Regeln (Head:-Body):}\\ \mintinline{prolog}{verb(X,Y) :- bhf(X),bhf(Y)}\\
+Head gilt, wenn \underline{alle} Bedingung des Body wahr sind\\
+\emph{Lists:}\mintinline{prolog}{[a,b,c] [], [a|[b,c]]}\\
+
+\textbf{Unifikation:}\\
+$f(a,X,g(X)) \implies f(a,b,Y)$ 
+$\text{with: } \{X/b, Y/g(b)\}$\\
+
+\textbf{Prolog Example:}\\
+\vspace{-5mm}
+\begin{minted}[mathescape, numbersep=5pt, frame=lines,framesep=2mm, fontsize=\tiny]{prolog}
+% LISTS
+% [1,2,3] = [1,2,3].
+% [1,2,3] = [1|[2,3]].
+% [1,2,3] = [1,2,3|[]].
+
+member(M,[M|_]).
+member(M,[_|T]) :- member(M,T).
+
+% member(a,[a,b,c,d]).
+% member(X,[a,b,c,d]).
+% member(a,X).
+
+append([],Y,Y).
+append([H|X],Y,[H|Z]) :- append(X,Y,Z).
+
+perm([],[]).
+perm(L,[H|T]) :- append(V,[H|U],L), append(V,U,W), perm(W,T).
+
+% perm([1,2,3],X).
+
+sorted([]).
+sorted([_]).
+sorted([H1,H2|T]) :- H1 =< H2, sorted([H2|T]).
+
+% sorted([1,2,3,4]).
+% sorted([1,2,30,4]).
+
+n_sort(L,SL) :- perm(L,SL), sorted(SL).
+
+% n_sort([2,1],X).
+% n_sort([2,1,0,5,3,4],X).
+
+% zuege
+verbindung(StadtA, StadtZ, GAbfZ, Wie) :-
+verbindung(StadtA, StadtZ, GAbfZ, [StadtA], Wie).
+verbindung(StadtA, StadtA, GAbfZ, S, []).
+verbindung(StadtA, StadtZ, GAbfZ, S, [(Num,StadtT)|Wie]):-
+zug(StadtA, StadtT, AbfZ, AnkZ, Num),
+\+ member(StadtT, S),
+AbfZ >= GAbfZ,
+verbindung(StadtT, StadtZ, AnkZ, [StadtT|S], Wie).
+\end{minted}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Functional Programming:}
+\begin{center} Computation: Evaluation of mathematical Functions \end{center}
+\emph{Why declarative?}
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemindent}{-0.15in}
+	\item Programming done with expression
+	\item Foundation: lambda calculus
+	\item no (or controlled) mutable state
+\end{itemize}
+\emph{Lambda calculus:} Formalisation of the concept of a math. function. Function as a Relation between 1 input and \underline{exactly} 1 output \\\\
+\emph{No mutable state:}
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemindent}{-0.15in}
+	\item \underline{Referential Transparency} $f(x)$ only depends on the definition of $f$ and the value $x$
+	\item No mutable variables
+	\item No assignements
+	\item No imperative control structures
+	\item All data structures are immutable
+\end{itemize}
+\emph{Functions as first-class citizen:}
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemindent}{-0.15in}
+	\item Funcs can be anonymous ($\lambda x.x+1$)
+	\item Funcs can be the input/output to other \emph{higher-order} Functions
+	\item Funcs can be composed ($f \circ g$)
+\end{itemize}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Expression Evaluation Stategies:}
+\emph{Call by Value}
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemindent}{-0.15in}
+	\item (+) Params evaluated only once
+	\item (-) All Params evaluated (even unused)
+	\item (-) May not terminate
+\end{itemize}
+\emph{Call by Name}
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemindent}{-0.15in}
+	\item (-) Params evaluated multiple times
+	\item (+) Unused Params not evaluated
+	\item (+) Terminates if there is a terminating strategy (e.g. base case)
+\end{itemize}
+\emph{Never-terminating-strategy:} recursion without base case \\
+\emph{Terminates-by-name:} \mintinline{haskell}{if true then o else infloop}\\
+\emph{Haskell's evaluation strategy:}\\\underline{Lazy Evaluation}, call-by-name and rember past evaluations
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Haskell ADTs:}\\
+\emph{With type parameters}
+\vspace{-5mm}
+\begin{minted}[mathescape, numbersep=5pt, frame=lines,framesep=2mm, fontsize=\scriptsize]{haskell}
+data Lst a = Nil | Cons a (Lst a)
+Lst :: * -> * 		-- type ctor
+Nil :: Lst a 		 -- term
+Cons :: a -> Lst a -> Lst a   -- term
+
+data Maybe a = Nothing | Just a
+Maybe :: * -> *
+Nothing :: Maybe a
+Just :: a -> Maybe a
+\end{minted}
+\emph{Without type parameters}
+\vspace{-5mm}
+\begin{minted}[mathescape, numbersep=5pt, frame=lines,framesep=2mm, fontsize=\scriptsize]{haskell}
+data Bool = True | False --type
+True :: Bool  -- term
+False :: Bool -- term
+\end{minted}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Haskell ADT Examples}
+\begin{minted}[mathescape, numbersep=5pt, frame=lines,framesep=2mm, fontsize=\tiny]{haskell}
+data Lst a = Nil | Cons a (Lst a) deriving (Show, Eq)
+
+--len :: Num a => Lst t -> a
+len Nil = 0
+len (Cons hd tl) = 1 + len tl
+
+--mem :: Eq a => a -> Lst a -> Bool
+mem e Nil = False
+mem e (Cons hd tl) = (e == hd) || (mem e tl)
+
+--appd
+appd e Nil = Cons e Nil
+appd e (Cons hd tl) = Cons hd (appd e tl)
+
+--nth
+nth :: Int -> Lst a -> Maybe a
+nth n Nil = Nothing
+nth n (Cons xs x) | n == 1 = (Just xs)
+                  | otherwise = nth (n-1) x
+
+--prod
+prod :: Num a => Lst a -> a
+prod Nil = 1
+prod (Cons hd tl) = hd * prod tl
+
+--disj --conj: replace || with &&
+disj :: Lst Bool -> Bool
+disj Nil = False
+disj (Cons hd tl) = hd || (disj tl)
+
+--mapp
+mapp :: (a -> b) -> Lst a -> Lst b
+mapp f Nil = Nil
+mapp f (Cons hd tl) = Cons (f hd) (mapp f tl)
+
+--filter
+fltr :: (a -> Bool) -> Lst a -> Lst a
+fltr f Nil = Nil
+fltr f (Cons hd tl) = if (f hd) then 
+			(Cons hd (fltr f tl)) else (fltr f tl)
+
+--reduce 
+reduce f i Nil = i
+reduce f i (Cons hd tl) = f hd (reduce f i tl)
+
+--redtotal
+redTotal :: Num a => Lst a -> a
+redTotal lst = reduce (\x y -> x + y) 0 lst
+
+--redDisj
+redDisj :: Lst Bool -> Bool
+redDisj lst = reduce (\x y -> x || y) False lst
+
+--redApp
+redApp :: Lst a -> Lst a -> Lst a
+redApp lst1 lst2 = reduce (\ x y -> Cons x y) lst2 lst1
+
+--insert
+insert :: Ord a => a -> Lst a -> Lst a
+insert x Nil = Cons x Nil
+insert x (Cons hd tl) | x < hd = (Cons x (Cons hd tl))
+                      | otherwise = (Cons hd (insert x tl))
+
+--insertionsort
+isort :: Ord a => Lst a -> Lst a -> Lst a
+isort lst Nil = lst
+isort sorted (Cons hd tl) = isort (insert hd sorted) tl
+
+--quicksort
+partition :: (a -> Bool) -> Lst a -> (Lst a, Lst a)
+partition f ls = (fltr f ls, fltr (\x -> not (f x)) ls)
+app Nil ls = ls
+app (Cons hd tl) ls = Cons hd (app tl ls)
+
+quicksort Nil = Nil
+quicksort (Cons hd tl) = app (quicksort smaller) 
+			(Cons hd (quicksort larger))
+  where
+    (smaller, larger) = (partition (\x -> x < hd) tl)
+\end{minted}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Haskell Tree ADT:}
+\begin{minted}[mathescape, numbersep=5pt, frame=lines,framesep=2mm, fontsize=\tiny]{haskell}
+data Tree a = Nil | Node a (Tree a) (Tree a) 
+			deriving(Show, Read, Eq)
+
+--treeMap
+treeMap :: (a -> b) -> Tree a -> Tree b
+treeMap f Nil = Nil
+treeMap f (Node v l r) = Node (f v) (treeMap f l) (treeMap f r)
+
+--repTree
+repTree :: (Ord a, Num a) => a1 -> a -> Tree a1
+repTree e depth 
+    | depth <= 0 = Nil
+    | otherwise  = Node e (repTree e (depth-1)) 
+    			(repTree e (depth-1))
+
+--inOrder, for preorder/postoder change place of [v]
+inOrder :: Tree a -> [a]
+inOrder Nil = []
+inOrder (Node v l r) = (inOrder l) ++ [v] ++ (inOrder r)
+
+--treeInsert
+treeInsert :: Ord a => a -> Tree a -> Tree a
+treeInsert x Nil = Node x Nil Nil
+treeInsert x (Node v l r) | x <= v = Node v (treeInsert x l) (r) 
+                          | otherwise = Node v l (treeInsert x r)
+
+--treeSearch                          
+treeSearch :: (Ord a) => a -> Tree a -> Bool  
+treeSearch x Nil = False  
+treeSearch x (Node a left right)  
+    | x == a = True  
+    | x < a  = treeSearch x left  
+    | x > a  = treeSearch x right
+
+--treeSort
+treeSort ls = inOrder (foldr treeInsert Nil ls)
+\end{minted}
+\end{breakbox}
