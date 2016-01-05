@@ -11,19 +11,11 @@ hinzufuegen, ohne\\
 2) keine Typensicherheit zu verlieren \\\\
 \emph{Loesung OO}
 \begin{itemize}
-	\setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \setlength{\itemindent}{-0.15in}
 	\pro neue Datentypen mit Vererbung
 	\con neue Operationen, schwer da Hierarchie anzupassen. Loesung: Visitor
 \end{itemize}
 \emph{Loesung FP}
 \begin{itemize}
-	\setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \setlength{\itemindent}{-0.15in}
 	\con neue Datentypen, schwer alle Pattern-Matches in Fkt anpassen. Loesung Haskell: Type Classes
 	\pro neue Operationen, einfach da getrennt von Daten
 \end{itemize}
@@ -94,3 +86,101 @@ val ruedi = Person("Ruedi", 42)
 matchAPerson(ruedi) //person with magical age!
 \end{scalacode}
 \end{breakbox}
+
+\begin{breakbox}
+\textbf{Methoden:}\\
+\begin{scalacode}
+def add1(m:Int, n:Int):Int = {m+n}
+def add2(m:Int, n:Int = 1) = m+n
+def add(m:Int)(n:Int) = m+n
+
+add1(10,5)
+add2(1)
+add1(n=10, m=5)
+add(10)(5)
+val addToTen = add(10) _ //Partial application e.g. currying
+\end{scalacode}
+
+\emph{Call-by-value / Call-by-name}\\
+\begin{scalacode}
+//call by value
+def unless(condition:Boolean, then:Unit) = {
+	if(!condition) { then }
+}
+// exception thrown cause all params are
+// evaluated from left to right
+unless(1+2==3, throw new RuntimeException()) 
+
+//call by name
+def unless(condition:Boolean, then:=>Unit) = {/*...*/}
+// then param only evaluated if used
+// then parameter is a function with no param 
+// and Unit as return type
+\end{scalacode}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Functions:}\\
+\begin{scalacode}
+(m:Int, n:Int) => m+n
+(m:Int, n:Int) => {m+n}
+(m:Int) => (n:Int) => m+n //currying
+
+// 3 main styles
+//func1: Int => Int = <function1>
+val func1: (Int) => Int = (x:Int) => x^2
+//func2: Int => Int = <function1>
+val func2 : Function1[Int, Int] = (x:Int) => x^2
+//func3: Function[Int,Int] = <function1>
+val func3 = new Function[Int, Int] { def apply(x:Int):Int = x^2  }
+
+//inplace
+case class Person(name:String, age:Int)
+val people = Person("Josef", 21) :: Person("Maria", 17) :: Nil
+val isAdult = (p:Person) => p.age >= 18 //predicate
+// def filter(p: (A) => Boolean): List[A]
+var adults = people.filter(isAdult)
+adults = people.filter((p:Person) => p.age >= 18)
+adults = people.filter(p => p.age >= 18)
+//block allows multiple statements
+adults = people.filter{p => p.age >= 18 && p.age < 99} 
+\end{scalacode}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Klassen:}
+\begin{itemize}
+	\item abstrakte und finale Klassen
+	\item Einfachvererbung
+	\item Jeder Klasse hat primaeren Ctor, der immer aufgerufen wird\\
+\end{itemize}
+\emph{Getter and Setter:}
+\begin{itemize}
+	\item keine public Datenfelder
+	\item Zugriff ueber getter (\mintinline[fontsize=\scriptsize]{scala}{p.age}) und setter (\mintinline[fontsize=\scriptsize]{scala}{p.age = 42})
+	\item \underline{Uniform Access Principle:} Aufrufer weiss nicht ob property oder methode
+\end{itemize}
+\begin{scalacode}
+abstract class Person(name:String, age:Int) {
+  def jobDescription : String //abstract
+  override def toString() = s"name: \$name, age: \$age"
+}
+
+class Student(val name:String, age:Int, private val sid:Int) 
+		extends Person(name, age) {
+  def this(name:String, age:Int, sid:Int, something:String) 
+  		= this(name, age, sid) //sec ctor
+  override def jobDescription = "Student"
+  val readOnlyVal = 42
+  var readWriteVar = 43
+  private val privateVal = 44
+  def aMethod(f:Int=>Int):Int = {f(42)}
+}
+
+val student = new Student("Pamela", 19, 696969)
+student.readWriteVar= 44
+student.aMethod(x=>x*x)
+\end{scalacode}
+\end{breakbox}
+
+

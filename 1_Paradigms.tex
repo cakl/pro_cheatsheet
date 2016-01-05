@@ -4,10 +4,6 @@
 \begin{breakbox}
 \textbf{Imperative:}
 \begin{itemize}
-	\setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \setlength{\itemindent}{-0.15in}
 	\item How program operates
 	\item Statements, change a programs state
 	\item Program = Seq. of statements
@@ -15,10 +11,6 @@
 \end{itemize}
 \textbf{Declarative:}
 \begin{itemize}
-	\setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \setlength{\itemindent}{-0.15in}
 	\item Logic of computation without describing its control flow
 	\item No side effects
 	\item Program = theories of formal logic
@@ -111,10 +103,6 @@ verbindung(StadtT, StadtZ, AnkZ, [StadtT|S], Wie).
 \end{mdframed}
 \emph{Why declarative?}
 \begin{itemize}
-	\setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \setlength{\itemindent}{-0.15in}
 	\item Programming done with expression
 	\item Foundation: lambda calculus
 	\item no (or controlled) mutable state
@@ -122,22 +110,14 @@ verbindung(StadtT, StadtZ, AnkZ, [StadtT|S], Wie).
 \emph{Lambda calculus:} Formalisation of the concept of a math. function. Function as a Relation between 1 input and \underline{exactly} 1 output \\\\
 \emph{No mutable state:}
 \begin{itemize}
-	\setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \setlength{\itemindent}{-0.15in}
 	\item \underline{Referential Transparency} $f(x)$ only depends on the definition of $f$ and the value $x$
 	\item No mutable variables
 	\item No assignements
 	\item No imperative control structures
-	\item All data structures are immutable
+	\item All data structures are immutable\\
 \end{itemize}
 \emph{Functions as first-class citizen:}
 \begin{itemize}
-	\setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \setlength{\itemindent}{-0.15in}
 	\item Funcs can be anonymous ($\lambda x.x+1$)
 	\item Funcs can be the input/output to other \emph{higher-order} Functions
 	\item Funcs can be composed ($f \circ g$)
@@ -148,23 +128,15 @@ verbindung(StadtT, StadtZ, AnkZ, [StadtT|S], Wie).
 \textbf{Expression Evaluation Stategies:}
 \emph{Call by Value}
 \begin{itemize}
-	\setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \setlength{\itemindent}{-0.15in}
 	\pro Params evaluated only once
 	\con All Params evaluated (even unused)
-	\con May not terminate
+	\con May not terminate\\
 \end{itemize}
 \emph{Call by Name}
 \begin{itemize}
-	\setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \setlength{\itemindent}{-0.15in}
 	\con Params evaluated multiple times
 	\pro Unused Params not evaluated
-	\pro Terminates if there is a terminating strategy (e.g. base case)
+	\pro Terminates if there is a terminating strategy (e.g. base case)\\
 \end{itemize}
 \emph{Never-terminating-strategy:} recursion without base case \\
 \emph{Terminates-by-name:} \mintinline{haskell}{if true then o else infloop}\\
@@ -392,20 +364,12 @@ perm xs = [x:ys | x <- xs, ys <- perm (delFst x xs)]
 \textbf{Polymorphism:}\\
 \emph{Variants}
 \begin{itemize}
-	\setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \setlength{\itemindent}{-0.15in}
 	\item Ad-hoc: function with the same name denotes different implementations (function overloading)
 	\item Parametric: Code written to work with many possible types (OO:generics)
 	\item Subtype: one type (subtype) can be substituted for another (supertype)
 \end{itemize}
 \emph{Haskell's Polymorphism}
 \begin{itemize}
-	\setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \setlength{\itemindent}{-0.15in}
 	\item Implemented with type classes
 	\item Parametric: \mintinline{haskell}{id :: a -> a} works with all types
 	\item Ad-hoc: \mintinline{haskell}{Eq Bool, Eq Int} type classes: different instances of type clases denote different implementations
