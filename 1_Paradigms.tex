@@ -152,9 +152,9 @@ verbindung(StadtT, StadtZ, AnkZ, [StadtT|S], Wie).
     \setlength{\parskip}{0pt}
     \setlength{\parsep}{0pt}
     \setlength{\itemindent}{-0.15in}
-	\item (+) Params evaluated only once
-	\item (-) All Params evaluated (even unused)
-	\item (-) May not terminate
+	\pro Params evaluated only once
+	\con All Params evaluated (even unused)
+	\con May not terminate
 \end{itemize}
 \emph{Call by Name}
 \begin{itemize}
@@ -162,9 +162,9 @@ verbindung(StadtT, StadtZ, AnkZ, [StadtT|S], Wie).
     \setlength{\parskip}{0pt}
     \setlength{\parsep}{0pt}
     \setlength{\itemindent}{-0.15in}
-	\item (-) Params evaluated multiple times
-	\item (+) Unused Params not evaluated
-	\item (+) Terminates if there is a terminating strategy (e.g. base case)
+	\con Params evaluated multiple times
+	\pro Unused Params not evaluated
+	\pro Terminates if there is a terminating strategy (e.g. base case)
 \end{itemize}
 \emph{Never-terminating-strategy:} recursion without base case \\
 \emph{Terminates-by-name:} \mintinline{haskell}{if true then o else infloop}\\
