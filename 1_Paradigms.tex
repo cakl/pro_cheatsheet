@@ -53,7 +53,7 @@ $\text{with: } \{X/b, Y/g(b)\}$\\
 
 \textbf{Prolog Example:}\\
 \vspace{-5mm}
-\begin{minted}[mathescape, numbersep=5pt, frame=lines,framesep=2mm, fontsize=\tiny]{prolog}
+\begin{prologcode}
 % LISTS
 % [1,2,3] = [1,2,3].
 % [1,2,3] = [1|[2,3]].
@@ -95,7 +95,7 @@ zug(StadtA, StadtT, AbfZ, AnkZ, Num),
 \+ member(StadtT, S),
 AbfZ >= GAbfZ,
 verbindung(StadtT, StadtZ, AnkZ, [StadtT|S], Wie).
-\end{minted}
+\end{prologcode}
 \end{breakbox}
 
 \begin{breakbox}
@@ -189,7 +189,7 @@ False :: Bool -- term
 
 \begin{breakbox}
 \textbf{Haskell ADT Examples}
-\begin{minted}[mathescape, numbersep=5pt, frame=lines,framesep=2mm, fontsize=\tiny]{haskell}
+\begin{haskellcode}
 data Lst a = Nil | Cons a (Lst a) deriving (Show, Eq)
 
 --len :: Num a => Lst t -> a
@@ -269,7 +269,7 @@ quicksort (Cons hd tl) = app (quicksort smaller)
 			(Cons hd (quicksort larger))
   where
     (smaller, larger) = (partition (\x -> x < hd) tl)
-\end{minted}
+\end{haskellcode}
 \end{breakbox}
 
 \begin{breakbox}
