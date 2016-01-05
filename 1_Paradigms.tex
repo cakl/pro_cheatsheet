@@ -273,8 +273,8 @@ quicksort (Cons hd tl) = app (quicksort smaller)
 \end{breakbox}
 
 \begin{breakbox}
-\textbf{Haskell Tree ADT:}
-\begin{minted}[mathescape, numbersep=5pt, frame=lines,framesep=2mm, fontsize=\tiny]{haskell}
+\textbf{Haskell Tree ADT:}\\
+\begin{haskellcode}
 data Tree a = Nil | Node a (Tree a) (Tree a) 
 			deriving(Show, Read, Eq)
 
@@ -311,5 +311,5 @@ treeSearch x (Node a left right)
 
 --treeSort
 treeSort ls = inOrder (foldr treeInsert Nil ls)
-\end{minted}
+\end{haskellcode}
 \end{breakbox}

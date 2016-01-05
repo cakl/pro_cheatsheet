@@ -12,6 +12,7 @@
 \usepackage{stmaryrd}
 \usepackage{minted}
 \usepackage{lipsum}
+\usepackage{xcolor}
 
 \usepackage{tikz}
 \usetikzlibrary{shapes,shapes.geometric,arrows,automata,fit,calc,positioning,matrix,backgrounds,decorations.pathreplacing}
@@ -34,3 +35,8 @@
 
 % remove page numbering
 \pagenumbering{gobble}
+
+
+\usemintedstyle{tango}
+\definecolor{tango-bg}{HTML}{F8F8F8}
+\newminted{haskell}{bgcolor=tango-bg,frame=lines,framesep=2mm,samepage=true,fontsize=\tiny}
