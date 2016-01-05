@@ -143,7 +143,12 @@ var adults = people.filter(isAdult)
 adults = people.filter((p:Person) => p.age >= 18)
 adults = people.filter(p => p.age >= 18)
 //block allows multiple statements
-adults = people.filter{p => p.age >= 18 && p.age < 99} 
+adults = people.filter{p => p.age >= 18 && p.age < 99}
+
+//function companion object
+val isAdult2 = new Function[Person, Boolean] {
+	def apply(p:Person) : Boolean = p.age >= 18
+}
 \end{scalacode}
 \end{breakbox}
 
@@ -183,4 +188,69 @@ student.aMethod(x=>x*x)
 \end{scalacode}
 \end{breakbox}
 
+\begin{breakbox}
+\textbf{Case Classes:}\\
+\mintinline[fontsize=\footnotesize]{scala}{case class Person(alter:int, name:String)}
+\begin{itemize}
+	\item Getter fuer alle Ctor-Param
+	\item \mintinline[fontsize=\scriptsize]{scala}{toString, equals, hashCode} automatisch
+	\item Copy-Methode \mintinline[fontsize=\scriptsize]{scala}{val p = person.copy(age=person.age+5)}
+	\item Verwendbar im Pattern-Matching
+	\item kein new noetig \mintinline[fontsize=\scriptsize]{scala}{val p = Person("X",12)}
+\end{itemize}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Singleton Objects:}\\
+\begin{itemize}
+	\item Scala hat kein stat. Methoden
+	\item SO werden autom. instanziert (kein ctor)
+	\item Heisst das Object gleich wie die Klasse spricht man vom \underline{Companion Object}
+	\item Bei Case-Classen generiert Comp Companion Object mit apply-Methode (\underline{Factory!})
+\end{itemize}
+\begin{scalacode}
+object Person { //ohne ctor
+	def apply(name:String) = new Person(name)
+}
+Person("Mirko") // entspricht Person.apply("")
+\end{scalacode}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Scala ADT:}\\
+\begin{scalacode}
+// FP Styled, for OO-Style include methods in class
+sealed class Lst[T]()
+case class Nil[T]() extends Lst[T]
+case class Cons[T](head:T, tail:Lst[T]) extends Lst[T]
+
+object Lst {
+  def length[T](lst:Lst[T]):Int = {
+    lst match {
+      case Nil() => 0
+      case Cons(_, tail) => 1+length(tail)
+    }
+  }
+}
+
+val list:Lst[Int] = Cons(1, Cons(2, Cons(3, Nil())))
+Lst.length(list)
+\end{scalacode}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Traits:}\\
+\begin{scalacode}
+trait Equal[T] {
+  def isEqual(t:T):Boolean
+  def isNotEqual(t:T) = !isEqual(t)
+}
+trait Named { def named:String }
+
+//this mixin with uap is really smooth shit!
+case class User(named:String) extends Equal[User] with Named {
+  def isEqual(t:User):Boolean = this.named == t.named
+}
+\end{scalacode}
+\end{breakbox}
 

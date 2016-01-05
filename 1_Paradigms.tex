@@ -168,199 +168,6 @@ False :: Bool -- term
 \end{breakbox}
 
 \begin{breakbox}
-\textbf{Haskell ADT Examples}
-\begin{haskellcode}
-data Lst a = Nil | Cons a (Lst a) deriving (Show, Eq)
-
---len :: Num a => Lst t -> a
-len Nil = 0
-len (Cons hd tl) = 1 + len tl
-
---mem :: Eq a => a -> Lst a -> Bool
-mem e Nil = False
-mem e (Cons hd tl) = (e == hd) || (mem e tl)
-
---appd
-appd e Nil = Cons e Nil
-appd e (Cons hd tl) = Cons hd (appd e tl)
-
---nth
-nth :: Int -> Lst a -> Maybe a
-nth n Nil = Nothing
-nth n (Cons xs x) | n == 1 = (Just xs)
-                  | otherwise = nth (n-1) x
-
---prod
-prod :: Num a => Lst a -> a
-prod Nil = 1
-prod (Cons hd tl) = hd * prod tl
-
---disj --conj: replace || with &&
-disj :: Lst Bool -> Bool
-disj Nil = False
-disj (Cons hd tl) = hd || (disj tl)
-
---mapp
-mapp :: (a -> b) -> Lst a -> Lst b
-mapp f Nil = Nil
-mapp f (Cons hd tl) = Cons (f hd) (mapp f tl)
-
---filter
-fltr :: (a -> Bool) -> Lst a -> Lst a
-fltr f Nil = Nil
-fltr f (Cons hd tl) = if (f hd) then 
-			(Cons hd (fltr f tl)) else (fltr f tl)
-
---reduce 
-reduce f i Nil = i
-reduce f i (Cons hd tl) = f hd (reduce f i tl)
-
---redtotal
-redTotal :: Num a => Lst a -> a
-redTotal lst = reduce (\x y -> x + y) 0 lst
-
---redDisj
-redDisj :: Lst Bool -> Bool
-redDisj lst = reduce (\x y -> x || y) False lst
-
---redApp
-redApp :: Lst a -> Lst a -> Lst a
-redApp lst1 lst2 = reduce (\ x y -> Cons x y) lst2 lst1
-
---insert
-insert :: Ord a => a -> Lst a -> Lst a
-insert x Nil = Cons x Nil
-insert x (Cons hd tl) | x < hd = (Cons x (Cons hd tl))
-                      | otherwise = (Cons hd (insert x tl))
-
---insertionsort
-isort :: Ord a => Lst a -> Lst a -> Lst a
-isort lst Nil = lst
-isort sorted (Cons hd tl) = isort (insert hd sorted) tl
-
---quicksort
-partition :: (a -> Bool) -> Lst a -> (Lst a, Lst a)
-partition f ls = (fltr f ls, fltr (\x -> not (f x)) ls)
-app Nil ls = ls
-app (Cons hd tl) ls = Cons hd (app tl ls)
-
-quicksort Nil = Nil
-quicksort (Cons hd tl) = app (quicksort smaller) 
-			(Cons hd (quicksort larger))
-  where
-    (smaller, larger) = (partition (\x -> x < hd) tl)
-\end{haskellcode}
-\end{breakbox}
-
-\begin{breakbox}
-\textbf{Haskell Tree ADT:}\\
-\begin{haskellcode}
-data Tree a = Nil | Node a (Tree a) (Tree a) 
-			deriving(Show, Read, Eq)
-
---treeMap
-treeMap :: (a -> b) -> Tree a -> Tree b
-treeMap f Nil = Nil
-treeMap f (Node v l r) = Node (f v) (treeMap f l) (treeMap f r)
-
---repTree
-repTree :: (Ord a, Num a) => a1 -> a -> Tree a1
-repTree e depth 
-    | depth <= 0 = Nil
-    | otherwise  = Node e (repTree e (depth-1)) 
-    			(repTree e (depth-1))
-
---inOrder, for preorder/postoder change place of [v]
-inOrder :: Tree a -> [a]
-inOrder Nil = []
-inOrder (Node v l r) = (inOrder l) ++ [v] ++ (inOrder r)
-
---treeInsert
-treeInsert :: Ord a => a -> Tree a -> Tree a
-treeInsert x Nil = Node x Nil Nil
-treeInsert x (Node v l r) | x <= v = Node v (treeInsert x l) (r) 
-                          | otherwise = Node v l (treeInsert x r)
-
---treeSearch                          
-treeSearch :: (Ord a) => a -> Tree a -> Bool  
-treeSearch x Nil = False  
-treeSearch x (Node a left right)  
-    | x == a = True  
-    | x < a  = treeSearch x left  
-    | x > a  = treeSearch x right
-
---treeSort
-treeSort ls = inOrder (foldr treeInsert Nil ls)
-\end{haskellcode}
-\end{breakbox}
-
-\begin{breakbox}
-\textbf{Haskell Lists and Functions:}\\
-\begin{haskellcode}
--- Lists
-l1 = [1..20]
-head (hd:tl) = hd //ambigous
-tail (hd:tl) = tl //ambigous
-
---
-palindrome l = reverse l == l
-
--- mult :: Int -> Int -> Int
-mult n 0 = 0
-mult n m = (mult n (m-1)) + n
-
--- pow :: Int -> Int -> Int
-pow n 0 = 1
-pow n m = mult (pow n (m-1)) n
-
--- conc :: [[a]] -> a
-conc [] = []
-conc (x:xs) = x ++ conc xs
-
--- Alternative definition
-conc' = foldr (++) []
-
--- delFst :: Eq t => t -> [t] -> [t]
--- deletes the first occurrence of an element from a list
-delFst _ [] = []
-delFst a (x:xs) 	| a == x  	= xs
-				| otherwise = delFst a xs 
-
--- drp :: Int -> [a] -> [a]
--- returns the list xs with the first n elements removed
-drp 0 xs = xs
-drp _ [] = []
-drp n (x:xs) = drp (n-1) xs
-
--- tke :: Int -> [a] -> [a]
--- returns the first n elements of the list xs.
-tke 0 _ = []
-tke _ [] = []
-tke n (x:xs) = (x:(tke (n-1) xs))
-
--- halve :: [a] -> ([a],[a])
--- splits a list of even length into two equal halves.
-halve xs = (tke n xs, drp n xs)
-	where n = div (length xs) 2
-	
--- List Comprehensions
--- delete :: Eq t => t -> [t] -> [t]
-delete x xs = [a | a <- xs, a /= x]
- 
--- quicksort :: Ord t => [t] -> [t]
-quicksort [] = []  
-quicksort (x:xs) = smallerSorted ++ [x] ++ smallerSorted
-	where
-		smallerSorted = quicksort [a | a <- xs, a <= x]
-		biggerSorted = quicksort [a | a <- xs, a > x]
-
--- perm :: Eq t => [t] -> [[t]]
-perm [] = [[]]
-perm xs = [x:ys | x <- xs, ys <- perm (delFst x xs)]
-\end{haskellcode}
-\end{breakbox}
-
-\begin{breakbox}
 \textbf{Polymorphism:}\\
 \emph{Variants}
 \begin{itemize}
@@ -396,3 +203,140 @@ instance Eq a => Eq (Tree a) where
 	(==)  =  treeEq
 \end{haskellcode}
 \end{breakbox}
+
+\begin{breakbox}
+\textbf{Haskell ADT Examples}
+\begin{haskellcode}
+data Lst a = Nil | Cons a (Lst a) deriving (Show, Eq)
+
+--len :: Num a => Lst t -> a
+len Nil = 0
+len (Cons hd tl) = 1 + len tl
+--mem :: Eq a => a -> Lst a -> Bool
+mem e Nil = False
+mem e (Cons hd tl) = (e == hd) || (mem e tl)
+--appd
+appd e Nil = Cons e Nil
+appd e (Cons hd tl) = Cons hd (appd e tl)
+--nth
+nth :: Int -> Lst a -> Maybe a
+nth n Nil = Nothing
+nth n (Cons xs x) | n == 1 = (Just xs)
+                  | otherwise = nth (n-1) x
+--prod
+prod :: Num a => Lst a -> a
+prod Nil = 1
+prod (Cons hd tl) = hd * prod tl
+--disj --conj: replace || with &&
+disj :: Lst Bool -> Bool
+disj Nil = False
+disj (Cons hd tl) = hd || (disj tl)
+--mapp
+mapp :: (a -> b) -> Lst a -> Lst b
+mapp f Nil = Nil
+mapp f (Cons hd tl) = Cons (f hd) (mapp f tl)
+--filter
+fltr :: (a -> Bool) -> Lst a -> Lst a
+fltr f Nil = Nil
+fltr f (Cons hd tl) = if (f hd) then 
+			(Cons hd (fltr f tl)) else (fltr f tl)
+--reduce 
+reduce f i Nil = i
+reduce f i (Cons hd tl) = f hd (reduce f i tl)
+--redtotal
+redTotal :: Num a => Lst a -> a
+redTotal lst = reduce (\x y -> x + y) 0 lst
+--redDisj
+redDisj :: Lst Bool -> Bool
+redDisj lst = reduce (\x y -> x || y) False lst
+--redApp
+redApp :: Lst a -> Lst a -> Lst a
+redApp lst1 lst2 = reduce (\ x y -> Cons x y) lst2 lst1
+--insert
+insert :: Ord a => a -> Lst a -> Lst a
+insert x Nil = Cons x Nil
+insert x (Cons hd tl) | x < hd = (Cons x (Cons hd tl))
+                      | otherwise = (Cons hd (insert x tl))
+--insertionsort
+isort :: Ord a => Lst a -> Lst a -> Lst a
+isort lst Nil = lst
+isort sorted (Cons hd tl) = isort (insert hd sorted) tl
+--quicksort
+partition :: (a -> Bool) -> Lst a -> (Lst a, Lst a)
+partition f ls = (fltr f ls, fltr (\x -> not (f x)) ls)
+app Nil ls = ls
+app (Cons hd tl) ls = Cons hd (app tl ls)
+
+quicksort Nil = Nil
+quicksort (Cons hd tl) = app (quicksort smaller) 
+			(Cons hd (quicksort larger))
+  where
+    (smaller, larger) = (partition (\x -> x < hd) tl)
+\end{haskellcode}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Haskell Lists and Functions:}\\
+\begin{haskellcode}
+-- Lists
+l1 = [1..20]
+head (hd:tl) = hd //ambigous
+tail (hd:tl) = tl //ambigous
+	
+-- List Comprehensions
+-- delete :: Eq t => t -> [t] -> [t]
+delete x xs = [a | a <- xs, a /= x]
+ 
+-- quicksort :: Ord t => [t] -> [t]
+quicksort [] = []  
+quicksort (x:xs) = smallerSorted ++ [x] ++ smallerSorted
+	where
+		smallerSorted = quicksort [a | a <- xs, a <= x]
+		biggerSorted = quicksort [a | a <- xs, a > x]
+
+-- perm :: Eq t => [t] -> [[t]]
+perm [] = [[]]
+perm xs = [x:ys | x <- xs, ys <- perm (delFst x xs)]
+\end{haskellcode}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Haskell Tree ADT:}\\
+\begin{haskellcode}
+data Tree a = Nil | Node a (Tree a) (Tree a) 
+			deriving(Show, Read, Eq)
+
+--treeMap
+treeMap :: (a -> b) -> Tree a -> Tree b
+treeMap f Nil = Nil
+treeMap f (Node v l r) = Node (f v) (treeMap f l) (treeMap f r)
+--repTree
+repTree :: (Ord a, Num a) => a1 -> a -> Tree a1
+repTree e depth 
+    | depth <= 0 = Nil
+    | otherwise  = Node e (repTree e (depth-1)) 
+    			(repTree e (depth-1))
+
+--inOrder, for preorder/postoder change place of [v]
+inOrder :: Tree a -> [a]
+inOrder Nil = []
+inOrder (Node v l r) = (inOrder l) ++ [v] ++ (inOrder r)
+
+--treeInsert
+treeInsert :: Ord a => a -> Tree a -> Tree a
+treeInsert x Nil = Node x Nil Nil
+treeInsert x (Node v l r) | x <= v = Node v (treeInsert x l) (r) 
+                          | otherwise = Node v l (treeInsert x r)
+--treeSearch                          
+treeSearch :: (Ord a) => a -> Tree a -> Bool  
+treeSearch x Nil = False  
+treeSearch x (Node a left right)  
+    | x == a = True  
+    | x < a  = treeSearch x left  
+    | x > a  = treeSearch x right
+--treeSort
+treeSort ls = inOrder (foldr treeInsert Nil ls)
+\end{haskellcode}
+\end{breakbox}
+
+
