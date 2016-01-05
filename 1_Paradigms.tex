@@ -321,3 +321,114 @@ treeSearch x (Node a left right)
 treeSort ls = inOrder (foldr treeInsert Nil ls)
 \end{haskellcode}
 \end{breakbox}
+
+\begin{breakbox}
+\textbf{Haskell Lists and Functions:}\\
+\begin{haskellcode}
+-- Lists
+l1 = [1..20]
+head (hd:tl) = hd //ambigous
+tail (hd:tl) = tl //ambigous
+
+--
+palindrome l = reverse l == l
+
+-- mult :: Int -> Int -> Int
+mult n 0 = 0
+mult n m = (mult n (m-1)) + n
+
+-- pow :: Int -> Int -> Int
+pow n 0 = 1
+pow n m = mult (pow n (m-1)) n
+
+-- conc :: [[a]] -> a
+conc [] = []
+conc (x:xs) = x ++ conc xs
+
+-- Alternative definition
+conc' = foldr (++) []
+
+-- delFst :: Eq t => t -> [t] -> [t]
+-- deletes the first occurrence of an element from a list
+delFst _ [] = []
+delFst a (x:xs) 	| a == x  	= xs
+				| otherwise = delFst a xs 
+
+-- drp :: Int -> [a] -> [a]
+-- returns the list xs with the first n elements removed
+drp 0 xs = xs
+drp _ [] = []
+drp n (x:xs) = drp (n-1) xs
+
+-- tke :: Int -> [a] -> [a]
+-- returns the first n elements of the list xs.
+tke 0 _ = []
+tke _ [] = []
+tke n (x:xs) = (x:(tke (n-1) xs))
+
+-- halve :: [a] -> ([a],[a])
+-- splits a list of even length into two equal halves.
+halve xs = (tke n xs, drp n xs)
+	where n = div (length xs) 2
+	
+-- List Comprehensions
+-- delete :: Eq t => t -> [t] -> [t]
+delete x xs = [a | a <- xs, a /= x]
+ 
+-- quicksort :: Ord t => [t] -> [t]
+quicksort [] = []  
+quicksort (x:xs) = smallerSorted ++ [x] ++ smallerSorted
+	where
+		smallerSorted = quicksort [a | a <- xs, a <= x]
+		biggerSorted = quicksort [a | a <- xs, a > x]
+
+-- perm :: Eq t => [t] -> [[t]]
+perm [] = [[]]
+perm xs = [x:ys | x <- xs, ys <- perm (delFst x xs)]
+\end{haskellcode}
+\end{breakbox}
+
+\begin{breakbox}
+\textbf{Polymorphism:}\\
+\emph{Variants}
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemindent}{-0.15in}
+	\item Ad-hoc: function with the same name denotes different implementations (function overloading)
+	\item Parametric: Code written to work with many possible types (OO:generics)
+	\item Subtype: one type (subtype) can be substituted for another (supertype)
+\end{itemize}
+\emph{Haskell's Polymorphism}
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemindent}{-0.15in}
+	\item Implemented with type classes
+	\item Parametric: \mintinline{haskell}{id :: a -> a} works with all types
+	\item Ad-hoc: \mintinline{haskell}{Eq Bool, Eq Int} type classes: different instances of type clases denote different implementations
+\end{itemize}
+\begin{haskellcode}
+-- type class Eq instance for Lst and Tree
+--
+data Lst a = Nil | Cons a (Lst a)
+data Tree a = EmptyTree | Node a (Tree a) (Tree a)
+
+-- lstEq :: Eq a => Lst a -> Lst a -> Bool
+lstEq Nil Nil = True
+lstEq (Cons x xs) (Cons y ys) = (x == y) && (lstEq xs ys)
+
+instance Eq a => Eq (Lst a) where
+	xs == ys  =  lstEq xs ys
+
+-- treeEq :: Eq a => Tree a -> Tree a -> Bool
+treeEq EmptyTree EmptyTree = True
+treeEq (Node x xl xr) (Node y yl yr) = (x == y) 
+			&& (treeEq xl yl) && (treeEq xr yr)
+
+instance Eq a => Eq (Tree a) where
+	(==)  =  treeEq
+\end{haskellcode}
+\end{breakbox}
