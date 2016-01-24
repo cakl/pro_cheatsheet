@@ -45,10 +45,10 @@ Head gilt, wenn \underline{alle} Bedingung des Body wahr sind\\
 \emph{Lists:}\mintinline{prolog}{[a,b,c] [], [a|[b,c]]}\\
 
 \textbf{Unifikation:}\\
-$f(a,X,g(X)) \implies f(a,b,Y)$ 
+$f(a,X,g(X)) \implies f(a,b,Y)$\\
 $\text{with: } \{X/b, Y/g(b)\}$\\
 
-\textbf{Prolog Example:}\\
+%\textbf{Prolog Example:}\\
 %\vspace{-5mm}
 \begin{prologcode}
 % LISTS
@@ -64,6 +64,11 @@ member(M,[_|T]) :- member(M,T).
 
 append([],Y,Y).
 append([H|X],Y,[H|Z]) :- append(X,Y,Z).
+% append([a,  b,  c],  [1,  2,  3],  _G518) 
+% append([b,  c],  [1,  2,  3],  _G587) 
+% append([c],  [1,  2,  3],  _G590) 
+% append([],  [1,  2,  3],  _G593) 
+% _G518 = [a|_G587] = [a|[b|_G590]] =[a|[b|[c|_G593]]]
 
 perm([],[]).
 perm(L,[H|T]) :- append(V,[H|U],L), append(V,U,W), perm(W,T).
@@ -84,8 +89,8 @@ n_sort(L,SL) :- perm(L,SL), sorted(SL).
 
 % zuege
 verbindung(StadtA, StadtZ, GAbfZ, Wie) :-
-verbindung(StadtA, StadtZ, GAbfZ, [StadtA], Wie).
-verbindung(StadtA, StadtA, GAbfZ, S, []).
+verbindung(StadtA, StadtZ, GAbfZ, [StadtA], Wie). %interface
+verbindung(StadtA, StadtA, GAbfZ, S, []). % S rembers already visited
 verbindung(StadtA, StadtZ, GAbfZ, S, [(Num,StadtT)|Wie]):-
 zug(StadtA, StadtT, AbfZ, AnkZ, Num),
 \+ member(StadtT, S),
