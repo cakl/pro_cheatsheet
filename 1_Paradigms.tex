@@ -293,6 +293,7 @@ l4 = 1:l3 -- add elemnt: [1,1,2,3,4]
 v = l4 !! 4 -- get element: 4
 	
 -- List Comprehensions
+[ x*y | x <- [2,5,10], y <- [8,10,11], x*y > 50]  -- [55,80,100,110]
 -- delete :: Eq t => t -> [t] -> [t]
 delete x xs = [a | a <- xs, a /= x]
  
