@@ -115,7 +115,7 @@ verbindung(StadtT, StadtZ, AnkZ, [StadtT|S], Wie).
 \emph{Lambda calculus:} Formalisation of the concept of a math. function. Function as a Relation between 1 input and \underline{exactly} 1 output \\\\
 \emph{No mutable state:}
 \begin{itemize}
-	\item \underline{Referential Transparency} $f(x)$ only depends on the definition of $f$ and the value $x$
+	\item \underline{Referential Transparency/Purity} $f(x)$ only depends on the definition of $f$ and the value $x$
 	\item No mutable variables
 	\item No assignements
 	\item No imperative control structures
@@ -245,7 +245,7 @@ fltr :: (a -> Bool) -> Lst a -> Lst a
 fltr f Nil = Nil
 fltr f (Cons hd tl) = if (f hd) then 
 			(Cons hd (fltr f tl)) else (fltr f tl)
---reduce 
+--reduce :: (t -> t1 -> t1) -> t1 -> Lst t -> t1
 reduce f i Nil = i
 reduce f i (Cons hd tl) = f hd (reduce f i tl)
 --redtotal
