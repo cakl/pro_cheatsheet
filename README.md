@@ -4,4 +4,4 @@
 
 ### Dependencies
 - [minted](https://github.com/gpoore/minted) is used for code coloring
-- for any other dependencies see config.tex
+- for any other dependencies see [config.tex](https://github.com/cakl/pro_cheatsheet/blob/master/config.tex)
